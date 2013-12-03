@@ -27,5 +27,7 @@
 	<classpathentry kind="lib" path="/home/chethans/Geo tracking/jaxb-impl-2.0.3.jar"/>
 	<classpathentry kind="lib" path="/home/chethans/Geo tracking/jsr173_api-1.0.jar"/>
 	<classpathentry kind="lib" path="/home/chethans/Geo tracking/stax-api-1.0-2.jar"/>
+	<classpathentry kind="lib" path="stanford-ner/stanford-ner-2013-11-12.jar"/>
+	<classpathentry kind="lib" path="stanford-ner/stanford-ner.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

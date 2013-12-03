@@ -40,7 +40,7 @@ public class SearchTweets {
 				Query query = new Query("#event");
 				QueryResult result;
 				StringBuilder csvOutputString;
-				Thread.sleep(1000);
+				Thread.sleep(1300);
 				do {
 					result = twitter.search(query);
 					List<Status> tweets = result.getTweets();
@@ -56,11 +56,12 @@ public class SearchTweets {
 						}
 
 						System.out.println("Map size: " + map.size());
+						if(map.size() >= 50)	break;
 						/*String[] data = csvOutputString.toString().split("#@XF");
 						writer.writeNext(data);*/
 					}
 					
-					if(map.size() >= 500)	break;
+					if(map.size() >= 50)	break;
 					
 				} while ((query = result.nextQuery()) != null);
 				
