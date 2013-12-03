@@ -25,4 +25,15 @@ public class Utilities {
 		
 		return locCoordinates;
 	}
+	
+	public static String getAddressFromCoordinates(LatLng location) {
+		final Geocoder geocoder = new Geocoder();
+		GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setLocation(location)
+			.setLanguage("en").getGeocoderRequest();
+		GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
+		
+		String address = geocoderResponse.getResults().get(0).getFormattedAddress();
+		
+		return address;
+	}
 }

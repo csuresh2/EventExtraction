@@ -5,7 +5,9 @@ import twitter4j.json.DataObjectFactory;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -31,6 +33,7 @@ public class SearchTweets {
 		}*/
 		Twitter twitter = new TwitterFactory().getInstance();
 		CSVWriter writer = new CSVWriter(new FileWriter("/home/chethans/twitterOutput.csv"));
+		HashMap<Long, StringBuilder> map = new HashMap<Long, StringBuilder>();
 		
 		while(true){
 			try {
@@ -43,14 +46,29 @@ public class SearchTweets {
 					List<Status> tweets = result.getTweets();
 					for (Status tweet : tweets) {
 						System.out.println(tweet.toString());
-						csvOutputString = new StringBuilder();
-						csvOutputString.append(tweet.getId() + "#@XF" + tweet.getUser()
-							.getScreenName() + "#@XF" + tweet.getText() + "#@XF" + "0" +
-							"#@XF" + DataObjectFactory.getRawJSON(tweet));
-						String[] data = csvOutputString.toString().split("#@XF");
-						writer.writeNext(data);
+						
+						if(!map.containsKey(tweet.getId())) {
+							csvOutputString = new StringBuilder();
+							csvOutputString.append(tweet.getId() + "#@XF" + tweet.getUser()
+								.getScreenName() + "#@XF" + tweet.getText() + "#@XF" + "0" +
+								"#@XF" + DataObjectFactory.getRawJSON(tweet));
+							map.put(tweet.getId(), csvOutputString);
+						}
+
+						System.out.println("Map size: " + map.size());
+						/*String[] data = csvOutputString.toString().split("#@XF");
+						writer.writeNext(data);*/
 					}
+					
+					if(map.size() >= 500)	break;
+					
 				} while ((query = result.nextQuery()) != null);
+				
+				// Write the map contents to the csv file
+				for(Map.Entry entry: map.entrySet()) {
+					String[] data = entry.getValue().toString().split("#@XF");
+					writer.writeNext(data);
+				}
 			} catch (TwitterException te) {
 				te.printStackTrace();
 				System.out.println("Failed to search tweets: " + te.getMessage());

@@ -3,6 +3,8 @@ package TwitterEvents;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import twitter4j.HashtagEntity;
+
 /**
  * Extract and build features from the tweeted text.
  * 
@@ -31,9 +33,9 @@ public class TweetFeatures {
 		featuresMap.put("date", false);
 		
 		// Update hashtags info to featuresMap
-		ArrayList<String> hashTags = tweet.getHashTags();
-		for(int i=0; i < hashTags.size(); i++) {
-			featuresMap.put(hashTags.get(i), true);
+		HashtagEntity[] hashTags = tweet.getHashTags();
+		for(int i=0; i < hashTags.length; i++) {
+			featuresMap.put(hashTags[i].getText(), true);
 		}
 	}
 	

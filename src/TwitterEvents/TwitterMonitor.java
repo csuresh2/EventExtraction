@@ -47,15 +47,15 @@ class TwitterMonitor {
 		twitterStream.addListener(listener);
 
 		// Filter by terms
-		//FilterQuery filtre = new FilterQuery();
-		//String[] keywordsArray = { "university"};
+		FilterQuery filtre = new FilterQuery();
+		String[] keywordsArray = { "#event"};
 		//do0uble[][] locations = {{-88.295574,40.083851},{-88.188114,40.125866}}; 
 		//filtre.locations(locations);
-		//filtre.track(keywordsArray);
-		//twitterStream.filter(filtre);
+		filtre.track(keywordsArray);
+		twitterStream.filter(filtre);
 
 		// sample() method internally creates a thread which manipulates TwitterStream and calls these adequate listener methods continuously.
-		twitterStream.sample();
+		//twitterStream.sample();
 	}
 
 }
