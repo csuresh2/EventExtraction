@@ -1,4 +1,4 @@
-tweetcrawler
-============
+Event Extraction
+================
 
-A basic twitter crawl
+Live event extraction from tweets and plot it on to gMap.

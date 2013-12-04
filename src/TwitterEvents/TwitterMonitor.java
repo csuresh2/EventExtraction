@@ -28,7 +28,7 @@ class TwitterMonitor {
 			
 			public void onStatus(Status status) {
 				try {
-					if(status.getUser().getLang().equals("en")) {
+					// if(status.getUser().getLang().equals("en")) {
 						System.out.println(map.size());
 						if(!map.containsKey(status.getId())) {
 							StringBuilder csvOutputString = new StringBuilder();
@@ -37,9 +37,9 @@ class TwitterMonitor {
 								"#@XF" + DataObjectFactory.getRawJSON(status));
 							map.put(status.getId(), csvOutputString);
 						}
-					}
+					// }
 					
-					if(map.size() > 100) {
+					if(map.size() > 2000) {
 						// Write the map contents to the csv file
 						for(Map.Entry<Long, StringBuilder> entry: map.entrySet()) {
 							String[] data = entry.getValue().toString().split("#@XF");
@@ -83,8 +83,9 @@ class TwitterMonitor {
 		twitterStream.addListener(listener);
 
 		// Filter by terms
-		FilterQuery filter = new FilterQuery();
-		String[] keywordsArray = { "#event"};
+		FilterQuery query = new FilterQuery();
+		String[] keywordsArray = {"#event"};
+		// query.language(new String[] {"en"});
 		
 		/*
 		// This is an example of applying location filter
@@ -92,12 +93,8 @@ class TwitterMonitor {
 		filter.locations(locations);
 		*/
 		
-		filter.track(keywordsArray);
-		twitterStream.filter(filter);
-
-		// This method internally creates a thread which manipulates TwitterStream and 
-		// calls these adequate listener methods continuously.
-		twitterStream.sample();
+		query.track(keywordsArray);
+		twitterStream.filter(query);
 	}
 
 }
