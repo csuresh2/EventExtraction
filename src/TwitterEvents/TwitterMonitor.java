@@ -27,9 +27,7 @@ class TwitterMonitor {
 			HashMap<Long, StringBuilder> map = new HashMap<Long, StringBuilder>();
 			
 			public void onStatus(Status status) {
-				
 				try {
-					
 					if(status.getUser().getLang().equals("en")) {
 						System.out.println(map.size());
 						if(!map.containsKey(status.getId())) {
@@ -77,27 +75,27 @@ class TwitterMonitor {
 			@Override
 			protected void finalize() throws Throwable {
 				super.finalize();
-				/*dump.close();
-				fstream.close();*/
 				writer.close();
 			}
 		};
+		
 		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
-
-		//twitterStream.cleanUp(); // shutdown internal stream consuming thread
-		//twitterStream.shutdown();
-
 		twitterStream.addListener(listener);
 
 		// Filter by terms
 		FilterQuery filter = new FilterQuery();
 		String[] keywordsArray = { "#event"};
-		//do0uble[][] locations = {{-88.295574,40.083851},{-88.188114,40.125866}}; 
-		//filter.locations(locations);
+		
+		/*
+		// This is an example of applying location filter
+		double[][] locations = {{-88.295574,40.083851},{-88.188114,40.125866}}; 
+		filter.locations(locations);
+		*/
+		
 		filter.track(keywordsArray);
 		twitterStream.filter(filter);
 
-		// sample() method internally creates a thread which manipulates TwitterStream and 
+		// This method internally creates a thread which manipulates TwitterStream and 
 		// calls these adequate listener methods continuously.
 		twitterStream.sample();
 	}
