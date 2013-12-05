@@ -1,10 +1,14 @@
 package TwitterEvents;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,11 +36,22 @@ public class TweetFeatures {
 	// Like location, date, time, etc.	
 	HashMap<String, Boolean> featuresMap;
 	
-	public TweetFeatures(Tweet tweet) {
+	public TweetFeatures(Tweet tweet) throws IOException {
 		this.tweet = tweet;
 		eventKeywords = new HashSet<String>();
-		eventKeywords.addAll(Arrays.asList(new String[] {"exhibition", "charity", 
-			"albumrelease", "pressrelease", "eventhost"}));
+		
+		// Pick up the list of features to look for from the file 'FeaturesList.txt'
+		BufferedReader br = new BufferedReader(new FileReader("TwitterEvents/FeaturesList.txt"));
+		String line;
+		
+		while((line = br.readLine()) != null) {
+			// Accept the whole line as a new feature. Note that each line usually 
+			// contains one word or an average maximum of three words.
+			eventKeywords.add(line);
+		}
+		
+		br.close();
+		initFeaturesMap();
 	}
 	
 	public void initFeaturesMap() {
@@ -45,9 +60,15 @@ public class TweetFeatures {
 		// Update hashtags info to featuresMap
 		HashtagEntity[] hashTags = tweet.getHashTags();
 		for(int i=0; i < hashTags.length; i++) {
-			featuresMap.put(hashTags[i].getText(), true);
+			featuresMap.put("#" + hashTags[i].getText(), true);
 		}
 		
+		// Initialize the features from eventKeywords
+		Iterator<String> it = eventKeywords.iterator();
+		while(it.hasNext()) {
+			featuresMap.put(it.next(), false);
+		}
+
 		updateFeatures();
 	}
 	
