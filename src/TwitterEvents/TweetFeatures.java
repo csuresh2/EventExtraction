@@ -1,6 +1,7 @@
 package TwitterEvents;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -9,8 +10,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -26,22 +30,19 @@ import twitter4j.HashtagEntity;
  */
 public class TweetFeatures {
 
-	Tweet tweet;
-	String location;
-	String date;
-	String time;
+	private Tweet tweet;
 	Set<String> eventKeywords;
 	
 	// Modeling only presence and absence of features
 	// Like location, date, time, etc.	
-	HashMap<String, Boolean> featuresMap;
+	private LinkedHashMap<String, Boolean> featuresMap;
 	
 	public TweetFeatures(Tweet tweet) throws IOException {
 		this.tweet = tweet;
 		eventKeywords = new HashSet<String>();
 		
 		// Pick up the list of features to look for from the file 'FeaturesList.txt'
-		BufferedReader br = new BufferedReader(new FileReader("TwitterEvents/FeaturesList.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("FeaturesList.txt"));
 		String line;
 		
 		while((line = br.readLine()) != null) {
@@ -55,12 +56,14 @@ public class TweetFeatures {
 	}
 	
 	public void initFeaturesMap() {
-		featuresMap = new HashMap<String, Boolean>();
+		featuresMap = new LinkedHashMap<String, Boolean>();
+		featuresMap.put("#event", false);
 		
-		// Update hashtags info to featuresMap
+		// Update hashtags info to featuresMap for predefined set of features
 		HashtagEntity[] hashTags = tweet.getHashTags();
 		for(int i=0; i < hashTags.length; i++) {
-			featuresMap.put("#" + hashTags[i].getText(), true);
+			if(hashTags[i].getText().equals("event"))
+				featuresMap.put("#event", true);
 		}
 		
 		// Initialize the features from eventKeywords
@@ -96,7 +99,18 @@ public class TweetFeatures {
 		}
 	}
 	
-	public void flushFeaturesToFile(String csvFile, boolean append) throws IOException {
+	public void flushFeaturesToFile(String csvFile, boolean append, String label)
+		throws IOException {
+		
+		// If file doesn't exist then write out the first line with feature names
+		if(!(new File(csvFile).exists())) {
+			CSVWriter w = new CSVWriter(new FileWriter(csvFile, append));
+			String[] title = ArrayUtils.addAll(featuresMap.keySet()
+				.toArray(new String[0]), "label");
+			w.writeNext(title);
+			w.close();
+		}
+		
 		// open the csv file in append mode
 		CSVWriter writer = new CSVWriter(new FileWriter(csvFile, append));
 		StringBuilder sb = new StringBuilder();
@@ -105,7 +119,8 @@ public class TweetFeatures {
 			sb.append(entry.getValue() + "#@XF");
 		}
 		
-		sb.append("emptyLabel");
+		sb.append(label);
+		
 		String[] data = sb.toString().split("#@XF");
 		writer.writeNext(data);
 		writer.close();
@@ -120,5 +135,9 @@ public class TweetFeatures {
 	
 	public void updatePresence(String feature) {
 		featuresMap.put(feature, true);
+	}
+	
+	public HashMap<String, Boolean> getFeaturesMap() {
+		return featuresMap;
 	}
 }
