@@ -40,19 +40,21 @@ public class TweetsTrainer {
 			int numTweets = 0;
 			
 			// Fifth column is the raw JSON object and fourth column is the event-label
-			while((row = csvReader.readNext()) != null && numTweets < 1000) {
-			    System.out.println(row[0]);
-			    System.out.println(row[4]);
-			    
-			    String label = row[3];
-			    try {
-			    	Status status = DataObjectFactory.createStatus(row[4]);
-			    	System.out.println(status.toString());
-					addAllTweetFeatures(label, status, "/home/chethans/twitterOutput.csv");
+			while((row = csvReader.readNext()) != null && numTweets < 2500) {
+			    if(row.length > 4) {
+			    	System.out.println(row[0]);
+				    System.out.println(row[4]);
+
+				    String label = row[3].equals("0")? "NotEvent" : "Event";
+				    try {
+				    	Status status = DataObjectFactory.createStatus(row[4]);
+				    	System.out.println(status.toString());
+						addAllTweetFeatures(label, status, "/home/chethans/twitterOutput.csv");
+				    }
+					catch(TwitterException e){
+						System.out.println(e.getMessage());
+					}
 			    }
-				catch(TwitterException e){
-					System.out.println(e.getMessage());
-				}
 				
 			    numTweets++;
 			}

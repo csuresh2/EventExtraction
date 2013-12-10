@@ -57,13 +57,16 @@ public class TweetFeatures {
 	
 	public void initFeaturesMap() {
 		featuresMap = new LinkedHashMap<String, Boolean>();
+		
 		featuresMap.put("#event", false);
 		
 		// Update hashtags info to featuresMap for predefined set of features
 		HashtagEntity[] hashTags = tweet.getHashTags();
 		for(int i=0; i < hashTags.length; i++) {
-			if(hashTags[i].getText().equals("event"))
+			if(hashTags[i].getText().equals("event")) {
 				featuresMap.put("#event", true);
+				break;
+			}
 		}
 		
 		// Initialize the features from eventKeywords
@@ -87,6 +90,12 @@ public class TweetFeatures {
 		// ScreenName with keyword event
 		featuresMap.put("screenNameEvent", tweet.getStatusObject().getUser()
 			.getScreenName().toLowerCase().contains("event"));
+		
+		featuresMap.put("screenNameETL", tweet.getStatusObject().getUser()
+				.getScreenName().contains("ETL"));
+		
+		featuresMap.put("screenNameBidTickets", tweet.getStatusObject().getUser()
+				.getScreenName().contains("BidTickets"));
 		
 		// URL info in tweet text
 		featuresMap.put("urlInfo", (tweet.getStatusObject().getURLEntities().length > 0));

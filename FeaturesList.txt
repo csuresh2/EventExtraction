@@ -3,3 +3,9 @@ charity
 albumrelease
 pressrelease
 eventhost
+concert
+attend
+location
+ticket
+rsvp
+grandopening

@@ -95,7 +95,8 @@ public class Utilities {
 		
 		Set<String> timeKeywords = new HashSet<String>();
 		timeKeywords.addAll(Arrays.asList(new String[] {"today", "tomorrow", "monday", "tuesday", 
-			"wednesday", "thursday", "friday", "saturday", "sunday"}));
+			"wednesday", "thursday", "friday", "saturday", "sunday", "evening", "morning", 
+			"weekend", "afternoon"}));
 		
 		text.toLowerCase();
 		String[] list = text.split("\\s+");
