@@ -42,7 +42,7 @@ public class TweetsTrainer {
 			// Fifth column is the raw JSON object and fourth column is the event-label
 			while((row = csvReader.readNext()) != null && numTweets < 2500) {
 			    if(row.length > 4) {
-			    	System.out.println(row[0]);
+			    	System.out.println(row[0] + "\t" + numTweets);
 				    System.out.println(row[4]);
 
 				    String label = row[3].equals("0")? "NotEvent" : "Event";
